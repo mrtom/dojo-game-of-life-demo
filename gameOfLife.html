@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html dir="ltr">
+    
+    <head>
+        <link rel="stylesheet" type="text/css" href="js/dojo/dojo-trunk/dijit/themes/claro/claro.css">
+		<link rel="stylesheet" type="text/css" href="css/gameOfLife.css">
+		<link rel="stylesheet" type="text/css" href="js/dojo/telliott/games/conway/views/resources/DefaultView.css">
+		<title>The Game of Life</title>
+    </head>
+    
+    <body class="claro">
+    	<h1 class="title">The Game of Life with Dojo</h1>
+        <div id="gameOfLife">
+        	
+        </div>
+
+    </body>
+
+    <script type="text/javascript" src="js/dojo/dojo-trunk/dojo/dojo.js" >
+    </script>
+    <script type="text/javascript">
+        dojo.registerModulePath("telliott","../../telliott");
+        dojo.require("telliott.games.conway.GameOfLife");
+
+        dojo.addOnLoad(function() {
+            var game = new telliott.games.conway.GameOfLife({
+                id: "gameOfLife",
+                width: 30,
+                height: 30,
+                // TODO: How to set the values to those provided by the GameOfLife?
+                interval: 1000,
+                view: "telliott.games.conway.views.DefaultView",
+                node: "gameOfLife"
+            });
+        });
+    </script>
+
+</html>

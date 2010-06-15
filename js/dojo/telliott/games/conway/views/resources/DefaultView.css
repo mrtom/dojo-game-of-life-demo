@@ -1,0 +1,53 @@
+.gameCell {
+    color:#678197;
+    margin: 0;
+    
+    background-color: white;
+    border-bottom:1px solid #C0CCDF;
+    border-left:1px solid #C0CCDF;
+    text-align:center;
+}
+
+.gameCell.extraSmall {
+    padding: .1em;
+}
+
+.gameCell.small {
+    padding:.2em;
+}
+
+.gameCell.medium {
+    padding:.5em;
+}
+
+.gameCell.large {
+    padding:.7em;
+}
+
+.gameCell.extraLarge {
+    padding: 1em;
+}
+
+.gameBoard {
+    border-top:1px solid #C0CCDF;
+    border-right:1px solid #C0CCDF;
+    
+    margin:1em auto;
+    border-collapse:collapse;
+}
+
+.gameCell.alive {
+    background-color: #C0CCDF;
+}
+
+.sliderWrapper {
+    display: inline-block;
+}
+
+.controlsLabel {
+    margin: 0 0.2em 0 0.5em;
+
+    height: 25px;
+    display: inline-block;
+    /* vertical-align: text-bottom; */ /* Looks better in Safari, but worse in FF :( */
+}
