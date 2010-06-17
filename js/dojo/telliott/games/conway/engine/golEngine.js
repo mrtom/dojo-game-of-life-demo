@@ -74,87 +74,87 @@ dojo.declare("telliott.games.conway.engine.golEngine", null, {
             }
         }
     },
-	
-	/**
-	 * Resize the grid. This will calculate the neighbouring cells for changed cells too
-	 * @param {Object} newX - new x (width) dimension, assumed > 0
-	 * @param {Object} newY - new y (height) dimension, assumed > 0
-	 * @return: true if the resize succeeds. False otherwise
-	 */
-	resizeGrid: function(/* int */ newX, /* int */ newY) {
-		if (typeof newX === "number" && newX > 0 && typeof newY === "number" && newY > 0) {
-			var curWidth = dojo.clone(this._grid.getWidth());
-			var curHeight = dojo.clone(this._grid.getHeight());
-			
-			// First, cull
-			if (newX < curWidth) {
-				this.cells.splice(newX, (curWidth - newX));
-				this._grid.setWidth(newX);
-			}
-			
-			if (newY < curHeight) {
-				for (var i = 0; i < newX; i++) {
-					this.cells[i].splice(newY, (curHeight - newY));
-				}
-				this._grid.setHeight(newY);
-			}
-			
-			// Then grow
-			if (newX > curWidth) {
-	            for (var i = curWidth; i < newX; i++) {
-					this.cells[i] = new Array(newY);
-					for (var j = 0; j < newY; j++) {
-						this.cells[i][j] = new telliott.games.conway.engine.golEngine._cell(i, j, this._grid, this.cells);
-					}
-				}
-				this._grid.setWidth(newX);		
-			}
-			
-			if (newY > curHeight) {
-				for (var j = curHeight; j < newY; j++) {
-					for (var i = 0; i < newX; i++) {
-						this.cells[i][j] = new telliott.games.conway.engine.golEngine._cell(i, j, this._grid, this.cells);
-					}
-				}
-				this._grid.setHeight(newY);
-			}
-			
-			// Then calculate the new neighbours
-			// TODO: This will run even when the values havn't changed, which is inefficient
-			// Subtract 2 because the final row/column will be newX,Y - 1, and we need to jump one back again to calculate the neighbours
-			// for the previous row/column, as they'll have new neighbours!
-			var neighX = Math.min(newX, curWidth) - 2
-			var neighY = Math.min(newY, curHeight) -2; 
-			
-			// If we're negative, make zero
-			if (neighX < 0) neighX =  0;
-			if (neighY < 0) neighY = 0;
-			
-			// Columns first
-			if (newX != curWidth) {
-				for (var i = neighX; i < newX; i++) {
-					for (var j = 0; j < newY; j++) {
-						this.cells[i][j].findNeighbouringCells();
-					}
-				}
-			}
-			
-			// Now the rows
-			if (newY != curHeight) {
-				// TODO: We're going to end up doing the new corners twice. Maybe optimize this out?
-				for (var i = 0; i < newX; i++) {
-	                for (var j = neighY; j < newY; j++) {
-	                    this.cells[i][j].findNeighbouringCells();
-	                }
-	            }
-			}
-		}
-		else {
-			return false;
-		}
+    
+    /**
+     * Resize the grid. This will calculate the neighbouring cells for changed cells too
+     * @param {Object} newX - new x (width) dimension, assumed > 0
+     * @param {Object} newY - new y (height) dimension, assumed > 0
+     * @return: true if the resize succeeds. False otherwise
+     */
+    resizeGrid: function(/* int */ newX, /* int */ newY) {
+        if (typeof newX === "number" && newX > 0 && typeof newY === "number" && newY > 0) {
+            var curWidth = dojo.clone(this._grid.getWidth());
+            var curHeight = dojo.clone(this._grid.getHeight());
+            
+            // First, cull
+            if (newX < curWidth) {
+                this.cells.splice(newX, (curWidth - newX));
+                this._grid.setWidth(newX);
+            }
+            
+            if (newY < curHeight) {
+                for (var i = 0; i < newX; i++) {
+                    this.cells[i].splice(newY, (curHeight - newY));
+                }
+                this._grid.setHeight(newY);
+            }
+            
+            // Then grow
+            if (newX > curWidth) {
+                for (var i = curWidth; i < newX; i++) {
+                    this.cells[i] = new Array(newY);
+                    for (var j = 0; j < newY; j++) {
+                        this.cells[i][j] = new telliott.games.conway.engine.golEngine._cell(i, j, this._grid, this.cells);
+                    }
+                }
+                this._grid.setWidth(newX);        
+            }
+            
+            if (newY > curHeight) {
+                for (var j = curHeight; j < newY; j++) {
+                    for (var i = 0; i < newX; i++) {
+                        this.cells[i][j] = new telliott.games.conway.engine.golEngine._cell(i, j, this._grid, this.cells);
+                    }
+                }
+                this._grid.setHeight(newY);
+            }
+            
+            // Then calculate the new neighbours
+            // TODO: This will run even when the values havn't changed, which is inefficient
+            // Subtract 2 because the final row/column will be newX,Y - 1, and we need to jump one back again to calculate the neighbours
+            // for the previous row/column, as they'll have new neighbours!
+            var neighX = Math.min(newX, curWidth) - 2
+            var neighY = Math.min(newY, curHeight) -2; 
+            
+            // If we're negative, make zero
+            if (neighX < 0) neighX =  0;
+            if (neighY < 0) neighY = 0;
+            
+            // Columns first
+            if (newX != curWidth) {
+                for (var i = neighX; i < newX; i++) {
+                    for (var j = 0; j < newY; j++) {
+                        this.cells[i][j].findNeighbouringCells();
+                    }
+                }
+            }
+            
+            // Now the rows
+            if (newY != curHeight) {
+                // TODO: We're going to end up doing the new corners twice. Maybe optimize this out?
+                for (var i = 0; i < newX; i++) {
+                    for (var j = neighY; j < newY; j++) {
+                        this.cells[i][j].findNeighbouringCells();
+                    }
+                }
+            }
+        }
+        else {
+            return false;
+        }
 
-		return true;
-	},
+        return true;
+    },
     
     /**
      * Clear the grid, essentially marking every cell as dead
@@ -276,14 +276,14 @@ dojo.declare("telliott.games.conway.engine.golEngine._grid", null, {
     getHeight: function() {
         return this._height;
     },
-	
-	setWidth: function(/* int */ newWidth) {
-		this._width = dojo.clone(newWidth);
-	},
-	
-	setHeight: function(/* int */ newHeight) {
-		this._height = dojo.clone(newHeight);
-	}
+    
+    setWidth: function(/* int */ newWidth) {
+        this._width = dojo.clone(newWidth);
+    },
+    
+    setHeight: function(/* int */ newHeight) {
+        this._height = dojo.clone(newHeight);
+    }
 });
 
 dojo.declare("telliott.games.conway.engine.golEngine._cell", null, {
@@ -319,12 +319,12 @@ dojo.declare("telliott.games.conway.engine.golEngine._cell", null, {
         return this._alive;
     },
     
-	/**
-	 * Calculates the neighbouring cells for this cell and stores in _neighbours (an array)
-	 */
+    /**
+     * Calculates the neighbouring cells for this cell and stores in _neighbours (an array)
+     */
     findNeighbouringCells: function() {
-		//console.log("Generating neighbours for [" + this._x + "," + this._y + "]");
-        this._neighbours = this._neighbours || [];
+        //console.log("Generating neighbours for [" + this._x + "," + this._y + "]");
+        this._neighbours = [];
         var n = 0;
         
         /*
@@ -373,11 +373,11 @@ dojo.declare("telliott.games.conway.engine.golEngine._cell", null, {
         //console.debug("Neighbouring cells found for " + this._x + ", " + this._y + ". Total found = " + this._neighbours.length);
     },
     
-	/**
-	 * Returns the living neighbours for this cell
-	 */
+    /**
+     * Returns the living neighbours for this cell
+     */
     getNeighbours: function() {
-		//console.debug("Getting neighbours for " + this._x + ", " + this._y);
+        //console.debug("Getting neighbours for " + this._x + ", " + this._y);
         var count = 0;
         
         for (var i = 0; i < this._neighbours.length; i++) {
