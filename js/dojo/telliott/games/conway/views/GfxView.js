@@ -1,20 +1,41 @@
-dojo.provide("telliott.games.conway.views.DefaultView");
+dojo.provide("telliott.games.conway.views.GfxView");
 
+
+dojo.require("dojo.colors");
 dojo.require("dijit.Dialog");
 dojo.require("dijit.layout.ContentPane");
+dojo.require("dojox.gfx");
+
 dojo.require("telliott.games.conway.views.DefaultControls");
 
-dojo.declare("telliott.games.conway.views.DefaultView", [dijit.layout.ContentPane, telliott.games.conway.views.DefaultControls], {
+dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, telliott.games.conway.views.DefaultControls], {
+
+    // Statics
+    CELL_SIZE_EXTRA_SMALL: 0,
+    CELL_SIZE_SMALL: 1,
+    CELL_SIZE_MEDIUM: 2,
+    CELL_SIZE_LARGE: 3,
+    CELL_SIZE_EXTRA_LARGE: 4,
+    
+    _cellSizes: [],
     
     // Instance Vars
-    
+
     // The id of the game controller we wish to represent
     _controllerId: null,
     _controller: null,
     _currentSize: null,
+	
+	// Width and height in cells
     _width: null,
     _height: null,
+	
+	// Width and height in pixels
+	_surfaceWidth: null,
+	_surfaceHeight: null,
+	
     _containerNode: null,
+	_surface: null,
     
     _containedWidgets: null,
     
@@ -30,10 +51,13 @@ dojo.declare("telliott.games.conway.views.DefaultView", [dijit.layout.ContentPan
         this._width = props.gridWidth;
         this._height = props.gridHeight;
         this._containedWidgets = [];
-        this._cellSizes = [this.CELL_SIZE_EXTRA_SMALL, this.CELL_SIZE_SMALL, this.CELL_SIZE_MEDIUM, this.CELL_SIZE_LARGE, this.CELL_SIZE_EXTRA_LARGE ];
+		this._cellSizes = [this.CELL_SIZE_EXTRA_SMALL, this.CELL_SIZE_SMALL, this.CELL_SIZE_MEDIUM, this.CELL_SIZE_LARGE, this.CELL_SIZE_EXTRA_LARGE ];
         
         // TODO: Set size based on grid and viewport size?
         this._currentSize = this.CELL_SIZE_MEDIUM;
+		
+		this._surfaceWidth = this._width * this._getCellSize(this._currentSize);
+		this._surfaceHeight = this._height * this._getCellSize(this._currentSize);
     },
     
     postCreate: function() {
@@ -75,101 +99,75 @@ dojo.declare("telliott.games.conway.views.DefaultView", [dijit.layout.ContentPan
         });
     },
 	
-	_createGrid: function(/* boolean */ createTable) {
-		// Table for the game board
-        var table;
-		
-		if (createTable || !dojo.byId(this.id+"_gameBoard")) {
-		  table = dojo.create("table", { id: this.id+"_gameBoard"}, this.domNode);			
-		}
-		else {
-			table = dojo.byId(this.id+"_gameBoard");
-			dojo.empty(table);
-		}
-		
-        var cssClass = this._getCellSizeCssSelector(this._currentSize);
-        
-        dojo.addClass(table, "gameBoard");
-        
-        for (var y = 0; y < this._height; y++) {
-            var row = dojo.create("tr", { id: "gameRow_" + y}, table);
-            dojo.addClass(row, "gameRow");
-            for (var x = 0; x < this._width; x++) {
-                var cell = dojo.create("td", { 
-                    id: "gameCell_" + x + "_" + y,
-                    xCoord: x,
-                    yCoord: y
-                }, row);
-                dojo.addClass(cell, "gameCell " + cssClass);
-                dojo.connect(cell, "onclick", this, function(evt) {
-                    this._controller.toggleCell(dojo.attr(evt.target, "xCoord"), dojo.attr(evt.target, "yCoord"));
-                    dojo.toggleClass(evt.target, "alive");
-                });
+	_createGrid: function(/* boolean */ createSurfaceContainer) {
+        // Surface for the game board
+        if (createSurfaceContainer || !dojo.byId(this.id+"_gameBoard")) {
+            dojo.create("div", { id: this.id+"_gameBoard"}, this.domNode);
+			dojo.addClass(this.id+"_gameBoard", "gameBoard");      
+        }
+
+        this._surface = dojox.gfx.createSurface(this.id + "_gameBoard", this._surfaceWidth, this._surfaceHeight)
+        this._surface.whenLoaded(dojo.hitch(this, function() {
+			var stroke = {style: "Solid", width: 0.5, color: "#678197"};
+			var background = this._surface.createRect({x: 0, y: 0, width: this._surfaceWidth, height: this._surfaceHeight}).setFill("white").setStroke(stroke);
+			
+			var cellSize = this._getCellSize(this._currentSize);
+			for(var i = 1; i < this._width; i++) {
+                this._surface.createLine({x1: cellSize*i, y1: 0, x2: cellSize*i, y2: this._surfaceWidth}).setStroke(stroke);                
             }
-        }
-	},
-    
-    _updateCellSize: function(/* int */ newSize) {
-        var oldCss = this._getCellSizeCssSelector(this._currentSize);
-        var newCss = this._getCellSizeCssSelector(newSize);
-        if (oldCss && newCss) {
-            dojo.query(".gameBoard td.gameCell." + oldCss).forEach(function(td) {
-                dojo.addClass(td, newCss);
-                dojo.removeClass(td, oldCss);
-            });
-            this._currentSize = newSize;
-        }
+			for(var i = 1; i < this._height; i++) {
+				this._surface.createLine({x1: 0, y1: cellSize*i, x2: this._surfaceWidth, y2: cellSize*i}).setStroke(stroke);				
+			}
+		}));
+        
     },
-    
-    _getCellSizeCssSelector: function(/* int */ size) {
-        if (size >= 0 && size < this._cellSizes.length) {
+	
+	// Redraw the grid with the new size
+	_updateCellSize: function(/* int */ newSize) {
+		
+	},
+	
+	// Return size (in pixals) depending on the cell size set
+    _getCellSize: function(/* int */ size) {
+		if (size >= 0 && size < this._cellSizes.length) {
             switch(size) {
                 case this.CELL_SIZE_EXTRA_SMALL:
-                    return "extraSmall";
+                    return 4;
                 case this.CELL_SIZE_SMALL:
-                    return "small";
+                    return 8;
                 case this.CELL_SIZE_LARGE:
-                    return "large";
+                    return 16;
                 case this.CELL_SIZE_EXTRA_LARGE:
-                    return "extraLarge"
+                    return 20
                 case this._CELL_SIZE_MEDIUM:
                     // Fall through
                 default:
                     // Shouldn't be possible, but just in case
-                    return "medium";
+                    return 12;
             }
         }
         return null;
-    },
-    
-    _setupDisplay: function(all_cells) {
-		// If the grid is a different size, bin the old one and start over
-		
+	},
+	
+	_setupDisplay: function(all_cells) {
+        // If the grid is a different size, bin the old one and start over
 		if (all_cells.length !== this._width || all_cells[0].length !== this._height) {
-			this._width = all_cells.length;
-			this._height = all_cells[0].length;
-		    dojo.empty(this.id+"_gameBoard");
-			this._createGrid(false);
-		}
-		
-        var alive = [];
-        
-        dojo.query(".gameCell.alive").forEach(function(n){
-            dojo.removeClass(n, "alive");
-        });
-        
-        for (var x = 0; x < all_cells.length; x++) {
-            for (var y = 0; y < all_cells.length; y++) {
-                var cell = all_cells[x][y];
-                if (cell && cell.isAlive()) {
-                    alive.push(cell);
-                }
-            }
+            this._width = all_cells.length;
+            this._height = all_cells[0].length;
+            dojo.empty(this.id+"_gameBoard");
+            this._createGrid(false);
         }
+        
+		var alive = [];
+		// Remove all cells
+		
+        // Update state for all cells in the all_cells array to alive
+		
+		// Update the display
         this._updateDisplay(alive);
     },
-    
-    _updateDisplay: function(cells) {
+	
+	_updateDisplay: function(cells) {
         for (var i = 0; i < cells.length; i++) {
             var coords = cells[i].getLocation();
             if (coords) {
@@ -178,4 +176,5 @@ dojo.declare("telliott.games.conway.views.DefaultView", [dijit.layout.ContentPan
             }
         }
     }
+
 });

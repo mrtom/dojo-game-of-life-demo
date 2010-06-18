@@ -1,0 +1,15 @@
+.gameBoard {
+    margin:1em auto;
+}
+
+.sliderWrapper {
+    display: inline-block;
+}
+
+.controlsLabel {
+    margin: 0 0.2em 0 0.5em;
+
+    height: 25px;
+    display: inline-block;
+    /* vertical-align: text-bottom; */ /* Looks better in Safari, but worse in FF :( */
+}

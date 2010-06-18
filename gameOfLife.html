@@ -4,7 +4,8 @@
     <head>
         <link rel="stylesheet" type="text/css" href="js/dojo/dojo-trunk/dijit/themes/claro/claro.css">
 		<link rel="stylesheet" type="text/css" href="css/gameOfLife.css">
-		<link rel="stylesheet" type="text/css" href="js/dojo/telliott/games/conway/views/resources/DefaultView.css">
+		<!-- <link rel="stylesheet" type="text/css" href="js/dojo/telliott/games/conway/views/resources/DefaultView.css"> -->
+		<link rel="stylesheet" type="text/css" href="js/dojo/telliott/games/conway/views/resources/GfxView.css">
 		<title>The Game of Life</title>
     </head>
     
@@ -29,7 +30,7 @@
                 height: 30,
                 // TODO: How to set the values to those provided by the GameOfLife?
                 interval: 1000,
-                view: "telliott.games.conway.views.DefaultView",
+                view: "telliott.games.conway.views.GfxView",
                 node: "gameOfLife"
             });
         });
