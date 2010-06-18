@@ -1,0 +1,13 @@
+The Game of Life with Dojo
+
+This demo uses version 1.5 of the Dojo Toolkit (http://dojotoolkit.org) to create a version of Conways Game of Life. More information about the Game of Life can be found on wikipedia at http://en.wikipedia.org/wiki/Conway's_Game_of_Life.
+
+The game demonstrates a number of features of the Dojo toolkit including:
+ * Dijits, used for the game controls.
+ * An MVC approach to client side Javascript development, including dojo.data for the model, dijits for the view and a custom controller. Whilst the demo has been build as a standalone Javascript app the model could be easily adapted to use Dojo.data to communicate with your backend of choice.
+ * Dojo publish and subscribe framework for communicating between the model, view and controller.
+ * Two views, one built using standard HTML tables and one build using dojox.gfx vector graphics API.
+ * An example project layout and introduction to the build system.
+
+Installation Instructions:
+// TODO
