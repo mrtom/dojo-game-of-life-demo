@@ -17,8 +17,6 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
     CELL_SIZE_LARGE: 3,
     CELL_SIZE_EXTRA_LARGE: 4,
     
-    _cellSizes: [],
-    
     // Instance Vars
 
     // The id of the game controller we wish to represent
@@ -40,6 +38,9 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
     _containedWidgets: null,
     
     _container: null,
+	
+	// Store the live cells in a 2D array
+	_liveCells: null,
     
     constructor: function(/* property bag */ props) {
            if (!(props.controllerId && props.controller && props.gridWidth && props.gridHeight)) {
@@ -58,6 +59,8 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
 		
 		this._surfaceWidth = this._width * this._getCellSize(this._currentSize);
 		this._surfaceHeight = this._height * this._getCellSize(this._currentSize);
+		
+		this._liveCells = [];
     },
     
     postCreate: function() {
@@ -108,7 +111,7 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
 
         this._surface = dojox.gfx.createSurface(this.id + "_gameBoard", this._surfaceWidth, this._surfaceHeight)
         this._surface.whenLoaded(dojo.hitch(this, function() {
-			var stroke = {style: "Solid", width: 0.5, color: "#678197"};
+			var stroke = {style: "Solid", width: 1, color: "#C0CCDF"};
 			var background = this._surface.createRect({x: 0, y: 0, width: this._surfaceWidth, height: this._surfaceHeight}).setFill("white").setStroke(stroke);
 			
 			var cellSize = this._getCellSize(this._currentSize);
@@ -119,6 +122,10 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
 				this._surface.createLine({x1: 0, y1: cellSize*i, x2: this._surfaceWidth, y2: cellSize*i}).setStroke(stroke);				
 			}
 		}));
+		
+		for (var i = 0; i < this._width; i++) {
+			this._liveCells[i] = [];
+		}
         
     },
 	
@@ -161,20 +168,47 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
 		var alive = [];
 		// Remove all cells
 		
-        // Update state for all cells in the all_cells array to alive
+        // Figure out which cells are alive, and put them into the alive array
+		for (var x = 0; x < all_cells.length; x++) {
+            for (var y = 0; y < all_cells.length; y++) {
+                var cell = all_cells[x][y];
+                if (cell && cell.isAlive()) {
+                    alive.push(cell);
+                }
+            }
+        }
 		
 		// Update the display
         this._updateDisplay(alive);
     },
 	
 	_updateDisplay: function(cells) {
-        for (var i = 0; i < cells.length; i++) {
+		for (var i = 0; i < cells.length; i++) {
             var coords = cells[i].getLocation();
             if (coords) {
-                var id = "gameCell_" + coords.x + "_" + coords.y;
-                dojo.toggleClass(id, "alive");
+                var col = this._liveCells[coords.x]; // TODO: Need more defensive coding here
+				var cell = col[coords.y] || null;
+				if (cell == null) {
+					// Currently dead, resusciate
+                    this._bringToLife(coords);
+				}
+				else {
+					// Currently live, kill
+					cell.removeShape();
+					this._liveCells[coords.x][coords.y] = null;
+				}
             }
         }
-    }
+    },
+	
+	_bringToLife: function(/* {x,y} */ coords) {
+		if (coords.x && coords.y) {
+			var cellSize = this._getCellSize(this._currentSize);
+			var col = this._liveCells[coords.x]; // TODO: Need more defensive coding here
+		    var cell = this._surface.createRect({x: cellSize*coords.x, y: cellSize*coords.y, width: cellSize, height: cellSize});
+			cell.setFill("#C0CCDF");
+			col[coords.y] = cell;
+		}
+	}
 
 });

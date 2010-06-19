@@ -19,6 +19,7 @@ dojo.declare("telliott.games.conway.views.DefaultControls", null, {
     CELL_SIZE_LARGE: 3,
     CELL_SIZE_EXTRA_LARGE: 4,
     
+	// Instance variables	
     _cellSizes: [],
 
     _createLayout: function() {
