@@ -178,6 +178,16 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
         
 		var alive = [];
 		// Remove all cells
+		for (var i = 0; i < this._liveCells.length; i++) {
+			for (var j = 0; j < this._liveCells[i].length; j++) {
+				var cell = this._liveCells[i][j];
+				if (cell != null) {
+				    cell.removeShape();
+					this._liveCells[i][j] = null;
+				}
+			}
+			
+		}
 		
         // Figure out which cells are alive, and put them into the alive array
 		for (var x = 0; x < all_cells.length; x++) {
