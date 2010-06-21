@@ -121,6 +121,15 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
 			for(var i = 1; i < this._height; i++) {
 				this._surface.createLine({x1: 0, y1: cellSize*i, x2: this._surfaceWidth, y2: cellSize*i}).setStroke(stroke);				
 			}
+			
+			// Setup connects for clicking
+			this._surface.connect("onclick", dojo.hitch(this, function(/* Event */ evt) {
+				var cellSize = this._getCellSize(this._currentSize);
+				var xCoord = Math.floor(evt.offsetX / cellSize);
+				var yCoord = Math.floor(evt.offsetY / cellSize);
+                this._controller.toggleCell(xCoord, yCoord);
+				this._toggleCellDisplay({x: xCoord, y: yCoord});                
+			}));
 		}));
 		
 		for (var i = 0; i < this._width; i++) {
@@ -131,7 +140,7 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
 	
 	// Redraw the grid with the new size
 	_updateCellSize: function(/* int */ newSize) {
-		
+		console.error("Function not yet implemented!");
 	},
 	
 	// Return size (in pixals) depending on the cell size set
@@ -185,21 +194,28 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
 	_updateDisplay: function(cells) {
 		for (var i = 0; i < cells.length; i++) {
             var coords = cells[i].getLocation();
-            if (coords) {
-                var col = this._liveCells[coords.x]; // TODO: Need more defensive coding here
-				var cell = col[coords.y] || null;
-				if (cell == null) {
-					// Currently dead, resusciate
-                    this._bringToLife(coords);
-				}
-				else {
-					// Currently live, kill
-					cell.removeShape();
-					this._liveCells[coords.x][coords.y] = null;
-				}
-            }
+            this._toggleCellDisplay(coords);               
         }
     },
+	
+	/*
+	 * Set's live cells to dead, and dead to live, *in the GUI only*. I.e. doens't update the model
+	 */
+	_toggleCellDisplay: function(/* {x , y } */ coords) {
+		if (coords) {
+            var col = this._liveCells[coords.x]; // TODO: Need more defensive coding here
+	        var cell = col[coords.y] || null;
+	        if (cell == null) {
+	            // Currently dead, resusciate
+	            this._bringToLife(coords);
+	        }
+	        else {
+	            // Currently live, kill
+	            cell.removeShape();
+	            this._liveCells[coords.x][coords.y] = null;
+	        }
+		}
+	},
 	
 	_bringToLife: function(/* {x,y} */ coords) {
 		if (coords.x && coords.y) {
