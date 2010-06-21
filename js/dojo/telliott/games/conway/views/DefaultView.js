@@ -25,6 +25,8 @@ dojo.declare("telliott.games.conway.views.DefaultView", [dijit.layout.ContentPan
             throw new Error("You must provide an ID for a GameOfLife Controller and grid height and width. Aborting!");
         }
         
+		dojo.addClass(dojo.body(), "goldefaultview");
+		
         this._controllerId = props.controllerId;
         this._controller = props.controller;
         this._width = props.gridWidth;

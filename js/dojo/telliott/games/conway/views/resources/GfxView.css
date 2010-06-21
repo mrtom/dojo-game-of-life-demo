@@ -1,12 +1,12 @@
-.gameBoard {
+.golgfxview .gameBoard {
     margin:1em auto;
 }
 
-.sliderWrapper {
+.golgfxview .sliderWrapper {
     display: inline-block;
 }
 
-.controlsLabel {
+.golgfxview .controlsLabel {
     margin: 0 0.2em 0 0.5em;
 
     height: 25px;

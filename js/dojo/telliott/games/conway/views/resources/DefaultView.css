@@ -1,4 +1,4 @@
-.gameCell {
+.goldefaultview .gameCell {
     color:#678197;
     margin: 0;
     
@@ -8,27 +8,27 @@
     text-align:center;
 }
 
-.gameCell.extraSmall {
+.goldefaultview .gameCell.extraSmall {
     padding: .1em;
 }
 
-.gameCell.small {
+.goldefaultview .gameCell.small {
     padding:.2em;
 }
 
-.gameCell.medium {
+.goldefaultview .gameCell.medium {
     padding:.5em;
 }
 
-.gameCell.large {
+.goldefaultview .gameCell.large {
     padding:.7em;
 }
 
-.gameCell.extraLarge {
+.goldefaultview .gameCell.extraLarge {
     padding: 1em;
 }
 
-.gameBoard {
+.goldefaultview .gameBoard {
     border-top:1px solid #C0CCDF;
     border-right:1px solid #C0CCDF;
     
@@ -36,15 +36,15 @@
     border-collapse:collapse;
 }
 
-.gameCell.alive {
+.goldefaultview .gameCell.alive {
     background-color: #C0CCDF;
 }
 
-.sliderWrapper {
+.goldefaultview .sliderWrapper {
     display: inline-block;
 }
 
-.controlsLabel {
+.goldefaultview .controlsLabel {
     margin: 0 0.2em 0 0.5em;
 
     height: 25px;

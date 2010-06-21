@@ -43,10 +43,12 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
 	_liveCells: null,
     
     constructor: function(/* property bag */ props) {
-           if (!(props.controllerId && props.controller && props.gridWidth && props.gridHeight)) {
+        if (!(props.controllerId && props.controller && props.gridWidth && props.gridHeight)) {
             throw new Error("You must provide an ID for a GameOfLife Controller and grid height and width. Aborting!");
         }
         
+		dojo.addClass(dojo.body(), "golgfxview");
+		
         this._controllerId = props.controllerId;
         this._controller = props.controller;
         this._width = props.gridWidth;
