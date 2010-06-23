@@ -25,8 +25,8 @@ dojo.declare("telliott.games.conway.views.DefaultView", [dijit.layout.ContentPan
             throw new Error("You must provide an ID for a GameOfLife Controller and grid height and width. Aborting!");
         }
         
-		dojo.addClass(dojo.body(), "goldefaultview");
-		
+        dojo.addClass(dojo.body(), "goldefaultview");
+        
         this._controllerId = props.controllerId;
         this._controller = props.controller;
         this._width = props.gridWidth;
@@ -76,19 +76,19 @@ dojo.declare("telliott.games.conway.views.DefaultView", [dijit.layout.ContentPan
             this._startBtn.setPlaying(false);
         });
     },
-	
-	_createGrid: function(/* boolean */ createTable) {
-		// Table for the game board
+    
+    _createGrid: function(/* boolean */ createTable) {
+        // Table for the game board
         var table;
-		
-		if (createTable || !dojo.byId(this.id+"_gameBoard")) {
-		  table = dojo.create("table", { id: this.id+"_gameBoard"}, this.domNode);			
-		}
-		else {
-			table = dojo.byId(this.id+"_gameBoard");
-			dojo.empty(table);
-		}
-		
+        
+        if (createTable || !dojo.byId(this.id+"_gameBoard")) {
+          table = dojo.create("table", { id: this.id+"_gameBoard"}, this.domNode);            
+        }
+        else {
+            table = dojo.byId(this.id+"_gameBoard");
+            dojo.empty(table);
+        }
+        
         var cssClass = this._getCellSizeCssSelector(this._currentSize);
         
         dojo.addClass(table, "gameBoard");
@@ -109,7 +109,7 @@ dojo.declare("telliott.games.conway.views.DefaultView", [dijit.layout.ContentPan
                 });
             }
         }
-	},
+    },
     
     _updateCellSize: function(/* int */ newSize) {
         var oldCss = this._getCellSizeCssSelector(this._currentSize);
@@ -145,15 +145,15 @@ dojo.declare("telliott.games.conway.views.DefaultView", [dijit.layout.ContentPan
     },
     
     _setupDisplay: function(all_cells) {
-		// If the grid is a different size, bin the old one and start over
-		
-		if (all_cells.length !== this._width || all_cells[0].length !== this._height) {
-			this._width = all_cells.length;
-			this._height = all_cells[0].length;
-		    dojo.empty(this.id+"_gameBoard");
-			this._createGrid(false);
-		}
-		
+        // If the grid is a different size, bin the old one and start over
+        
+        if (all_cells.length !== this._width || all_cells[0].length !== this._height) {
+            this._width = all_cells.length;
+            this._height = all_cells[0].length;
+            dojo.empty(this.id+"_gameBoard");
+            this._createGrid(false);
+        }
+        
         var alive = [];
         
         dojo.query(".gameCell.alive").forEach(function(n){

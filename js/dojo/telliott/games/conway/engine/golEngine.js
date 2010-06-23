@@ -173,9 +173,12 @@ dojo.declare("telliott.games.conway.engine.golEngine", null, {
     _seedGrid: function(/* Array of Live cell positions */ seed) {
         while(seed.length > 0) {
             var values = seed.pop();
-            var x = values.x || -1;
-            var y = values.y || -1;
             
+            // We can't just do: var x = values.x || someDefaultValue 
+            // as 0 will fail the check and is valid here
+            var x = typeof values.x === 'number' ? values.x : -1;
+            var y = typeof values.y === 'number' ? values.y : -1; 
+                        
             if (this.isContainedWithinGrid(x,y)) {
                 this.cells[x][y].resuscitate();
             }
@@ -240,7 +243,7 @@ dojo.declare("telliott.games.conway.engine.golEngine", null, {
      * @param {Object} int y : y coordinate
      */
     isContainedWithinGrid: function(/* int */ x, /* int */ y) {
-        return (x >= 0 && x < this._grid.getWidth() && y >= 0 && y <= this._grid.getHeight());
+        return (x >= 0 && x < this._grid.getWidth() && y >= 0 && y < this._grid.getHeight());
     },
     
     /**
