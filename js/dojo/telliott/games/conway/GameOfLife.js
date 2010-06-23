@@ -240,6 +240,10 @@ dojo.declare("telliott.games.conway.GameOfLife", null, {
         return value;
     },
     
+	// Return the current state of the board
+	queryState: function() {
+		this._publishGrid(this._engine.getCurrentState());
+	},
     
     // Publish functions
     _publishInterval: function() {

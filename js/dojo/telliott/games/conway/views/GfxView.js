@@ -40,7 +40,7 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
     _container: null,
     
     // Store the live cells in a 2D array
-    _liveCells: null,
+    _liveCellShapes: null,
     
     constructor: function(/* property bag */ props) {
         if (!(props.controllerId && props.controller && props.gridWidth && props.gridHeight)) {
@@ -59,10 +59,7 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
         // TODO: Set size based on grid and viewport size?
         this._currentSize = this.CELL_SIZE_MEDIUM;
         
-        this._surfaceWidth = this._width * this._getCellSize(this._currentSize);
-        this._surfaceHeight = this._height * this._getCellSize(this._currentSize);
-        
-        this._liveCells = [];
+        this._liveCellShapes = [];
     },
     
     postCreate: function() {
@@ -106,6 +103,10 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
     
     _createGrid: function(/* boolean */ createSurfaceContainer) {
         // Surface for the game board
+        
+        this._surfaceWidth = this._width * this._getCellSize(this._currentSize);
+        this._surfaceHeight = this._height * this._getCellSize(this._currentSize);
+
         if (createSurfaceContainer || !dojo.byId(this.id+"_gameBoard")) {
             dojo.create("div", { id: this.id+"_gameBoard"}, this.domNode);
             dojo.addClass(this.id+"_gameBoard", "gameBoard");
@@ -129,21 +130,19 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
                 var cellSize = this._getCellSize(this._currentSize);
                 var xCoord = Math.floor(evt.offsetX / cellSize);
                 var yCoord = Math.floor(evt.offsetY / cellSize);
-                alert("x: " + xCoord +  ", y:" + yCoord);
                 this._controller.toggleCell(xCoord, yCoord);
                 this._toggleCellDisplay({x: xCoord, y: yCoord});                
             }));
         }));
-        
-        for (var i = 0; i < this._width; i++) {
-            this._liveCells[i] = [];
-        }
-        
     },
     
-    // Redraw the grid with the new size
+    // Redraw the grid with the new cell size
     _updateCellSize: function(/* int */ newSize) {
-        console.error("Function not yet implemented!");
+		console.log(this._liveCellShapes);
+        dojo.empty(this.id+"_gameBoard");
+        this._currentSize = newSize;
+        this._createGrid(false);
+		this._controller.queryState();
     },
     
     // Return size (in pixals) depending on the cell size set
@@ -179,12 +178,13 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
         
         var alive = [];
         // Remove all cells
-        for (var i = 0; i < this._liveCells.length; i++) {
-            for (var j = 0; j < this._liveCells[i].length; j++) {
-                var cell = this._liveCells[i][j];
+        for (var i = 0; i < this._liveCellShapes.length; i++) {
+            if (!this._liveCellShapes[i]) this._liveCellShapes[i] = [];
+            for (var j = 0; j < this._liveCellShapes[i].length; j++) {
+                var cell = this._liveCellShapes[i][j];
                 if (cell != null) {
                     cell.removeShape();
-                    this._liveCells[i][j] = null;
+                    this._liveCellShapes[i][j] = null;
                 }
             }
             
@@ -216,7 +216,10 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
      */
     _toggleCellDisplay: function(/* {x , y } */ coords) {
         if (coords) {
-            var col = this._liveCells[coords.x]; // TODO: Need more defensive coding here
+            var col = this._liveCellShapes[coords.x];
+            if (!col) {
+                col = this._liveCellShapes[coords.x] = [];
+            }
             var cell = col[coords.y] || null;
             if (cell == null) {
                 // Currently dead, resusciate
@@ -225,7 +228,7 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
             else {
                 // Currently live, kill
                 cell.removeShape();
-                this._liveCells[coords.x][coords.y] = null;
+                this._liveCellShapes[coords.x][coords.y] = null;
             }
         }
     },
@@ -233,7 +236,10 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
     _bringToLife: function(/* {x,y} */ coords) {
         if (typeof coords.x === 'number' && typeof coords.y == 'number') {
             var cellSize = this._getCellSize(this._currentSize);
-            var col = this._liveCells[coords.x]; // TODO: Need more defensive coding here
+            var col = this._liveCellShapes[coords.x];
+            if (!col) {
+                col = this._liveCellShapes[coords.x] = [];
+            }
             var cell = this._surface.createRect({x: cellSize*coords.x, y: cellSize*coords.y, width: cellSize, height: cellSize});
             cell.setFill("#C0CCDF");
             col[coords.y] = cell;
