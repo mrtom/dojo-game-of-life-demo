@@ -119,7 +119,7 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
             
             var cellSize = this._getCellSize(this._currentSize);
             for(var i = 1; i < this._width; i++) {
-                this._surface.createLine({x1: cellSize*i, y1: 0, x2: cellSize*i, y2: this._surfaceWidth}).setStroke(stroke);                
+                this._surface.createLine({x1: cellSize*i, y1: 0, x2: cellSize*i, y2: this._surfaceHeight}).setStroke(stroke);                
             }
             for(var i = 1; i < this._height; i++) {
                 this._surface.createLine({x1: 0, y1: cellSize*i, x2: this._surfaceWidth, y2: cellSize*i}).setStroke(stroke);                
@@ -138,11 +138,10 @@ dojo.declare("telliott.games.conway.views.GfxView", [dijit.layout.ContentPane, t
     
     // Redraw the grid with the new cell size
     _updateCellSize: function(/* int */ newSize) {
-		console.log(this._liveCellShapes);
         dojo.empty(this.id+"_gameBoard");
         this._currentSize = newSize;
         this._createGrid(false);
-		this._controller.queryState();
+		this._controller.queryState();		
     },
     
     // Return size (in pixals) depending on the cell size set
