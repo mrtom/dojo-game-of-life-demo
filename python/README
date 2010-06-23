@@ -1,0 +1,17 @@
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+The scripts in this directory allow you to take a 2-bit (i.e. black and white) bitmap file and turn it into JSON to use as a seed. It probably works with non-bitmap files too, but I've not tried.
+
+Things are in a bit of a mess. If I had more time I've make the python script do everything, but I don't really know python and I got it working enough for me for this one image.
+Fixes to mrtom@cantab.net please! :)
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+If you want to convert your image into a seed, you need to do the following:
+
+1. Update GenerateDojoLogoSeed.py to point at a file of your choosing
+2. Run `python GenerateDojoLogoSeed.py > dojoLogoSeed.txt`. This puts the output of Generate DojoLogoSeed.py into 'dojoLogoSeed.txt'
+3. Run `./perlRegex.sh`. This modifies the output from the Python script and turns it into a JSON string that can be used directly as a seed for The Game of Life
+4. Copy the contents of dojoLogoSeed2.txt into telliott.games.conway.Seeds, following the standard object convention in that file
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
