@@ -2,6 +2,7 @@
  * @author mrtom
  */
 dojo.provide("telliott.games.conway.GameOfLife");
+dojo.require("dojo.data.ItemFileReadStore");
 dojo.require("telliott.games.conway.Seeds");
 dojo.require("telliott.games.conway.engine.golEngine");
 
@@ -62,16 +63,9 @@ dojo.declare("telliott.games.conway.GameOfLife", null, {
         this._node = props.node ? dojo.byId(props.node) : null;
         this._toToggle = [];
         
-        // TODO: This is a glider. We should actually set this to 'glider', and get the UI to reflect what we've set it to
-        // At the moment they're both just hard coded
-        this._seed = [
-            {x:4, y:4},
-            {x:4, y:5},
-            {x:4, y:6},
-            
-            {x:3, y:6},
-            {x:2, y:5}
-        ];
+        // TODO: This is the dojo toolkit logo. We should actually set this via a store, but I couldn't get it to work.
+		// We should also get the UI filtering select to reflect what we've set it to. At the moment they're both just hard coded.
+		this._seed = this._seeds.items[12].resetState._value.cells;
 
         this.speeds = [this.SPEED_TWO_SECONDS, this.SPEED_ONE_SECOND, this.SPEED_500_MILLIS, this.SPEED_200_MILLIS, this.SPEED_100_MILLIS, this.SPEED_50_MILLIS];
 
@@ -266,7 +260,7 @@ dojo.declare("telliott.games.conway.GameOfLife", null, {
     
     // Return the view created when this Game was setup, if it exists. Null otherwise
     getView: function() {
-        console.log(this._viewWidget);
+        //console.log(this._viewWidget);
         return this._viewWidget;
     }
 });

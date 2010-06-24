@@ -97,11 +97,12 @@ dojo.declare("telliott.games.conway.views.DefaultControls", null, {
         this._seedOptions = new dijit.form.FilteringSelect({
             id: this.id + "_seed",
             name: this.id + "_seed",
-            value: "gl",
+            value: "dti",
             labelAttr: "label",
             store: this._seedOptionStore,
             searchAttr: "name",
             onChange: dojo.hitch(this, function(value) {
+				alert(value);
                 this._seedOptionStore.fetch({
                     onComplete: dojo.hitch(this, function(items, request) {
                         this._controller.setSeed(dojo.clone(items[0].resetState[0].cells));
