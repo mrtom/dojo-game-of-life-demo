@@ -35,7 +35,7 @@ dojo.declare("telliott.games.conway.views.DefaultView", [dijit.layout.ContentPan
         this._cellSizes = [this.CELL_SIZE_EXTRA_SMALL, this.CELL_SIZE_SMALL, this.CELL_SIZE_MEDIUM, this.CELL_SIZE_LARGE, this.CELL_SIZE_EXTRA_LARGE ];
         
         // TODO: Set size based on grid and viewport size?
-        this._currentSize = this.CELL_SIZE_MEDIUM;
+        this._currentSize = this.CELL_SIZE_SMALL;
     },
     
     postCreate: function() {
